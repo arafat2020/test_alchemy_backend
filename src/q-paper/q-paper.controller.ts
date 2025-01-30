@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { QPaperService } from './q-paper.service';
 import { CreateQuestionPaperDto } from './q-paper.dto';
@@ -30,7 +30,7 @@ export class QPaperController {
         });
     }
 
-    @Post("get-all")
+    @Get("get-all")
     @ApiBearerAuth()
     @UseGuards(ExamineeGuard)
     async getAllQuestionPapers() {
