@@ -12,12 +12,12 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { QPaperService } from './q-paper.service';
-import { 
+import {
     CreateQuestionPaperDto,
-    DeleteQuestionPaperDto,
+    DeleteOrGetQuestionPaperDto,
     SearchQuestionPaperDto,
     UpdateQuestionPaperDto
- } from './q-paper.dto';
+} from './q-paper.dto';
 import { ExamineeGuard } from 'src/user-role/examinee/examinee.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ExtendedHeaderDto } from 'src/user/user.dto';
@@ -52,27 +52,32 @@ export class QPaperController {
         return await this.qPaperService.getAllQuestionPapers();
     }
 
+    @Get("get-by-id")
+    @ApiBearerAuth()
+    async getQuestionPapersByExamineeId(@Query() query: DeleteOrGetQuestionPaperDto) {
+        return await this.qPaperService.getQuestionPaperById(query);
+    }
+    
     @Patch("update")
     @ApiBearerAuth()
     @UseGuards(ExamineeGuard)
     updateQuestion(@Body() updatedData: UpdateQuestionPaperDto) {
-        const {id, ...rest} = updatedData
+        const { id, ...rest } = updatedData
         return this.qPaperService.updateQuestionPaper({
             id: updatedData.id as unknown as string,
-            updatedData:{
+            updatedData: {
                 name: rest.name,
                 duration: rest.duration,
             },
         });
     }
 
-    @Delete("update")
+    @Delete("delete")
     @ApiBearerAuth()
     @UseGuards(ExamineeGuard)
-    deleteQuestion(@Body() body: DeleteQuestionPaperDto) {
-        return this.qPaperService.deleteQuestionPaper({
-            id: body.id as unknown as string,
-        });
+    deleteQuestion(@Body() body: DeleteOrGetQuestionPaperDto,
+    ) {
+        return this.qPaperService.deleteQuestionPaper(body)
     }
 
     @Get("search")

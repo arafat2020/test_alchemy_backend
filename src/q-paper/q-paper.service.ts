@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { createQuestionPaperType } from 'src/interfaces/q-paper.interface';
 import { QuestionPaper, QuestionPaperDocument } from 'src/schemas/q-peaper.model';
+import { DeleteOrGetQuestionPaperDto } from './q-paper.dto';
 
 @Injectable()
 export class QPaperService {
@@ -24,10 +25,12 @@ export class QPaperService {
         }).exec();
     }
 
-    public async getQuestionPaperById({ id }: { id: string }): Promise<QuestionPaperDocument> {
+    public async getQuestionPaperById({ id }: DeleteOrGetQuestionPaperDto): Promise<QuestionPaperDocument> {
         const data = await this.QuestionPaperModel.findOne({
             _id: id
-        }).exec();
+        })
+        .populate("MCQSet")
+        .exec();
 
         if (!data) {
             throw new HttpException('Question Paper not found', HttpStatus.NOT_FOUND);
@@ -46,7 +49,7 @@ export class QPaperService {
         return data
     }
 
-    public async deleteQuestionPaper({ id }: { id: string }): Promise<{
+    public async deleteQuestionPaper({ id }: DeleteOrGetQuestionPaperDto): Promise<{
         msg: string
     }> {
         await this.QuestionPaperModel.findOneAndUpdate({

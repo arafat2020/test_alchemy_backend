@@ -31,3 +31,11 @@ QuestionPaperSchema.index({
     name: "text",
  });
 
+ QuestionPaperSchema.pre("findOneAndDelete", async function (next) {
+    const doc = await this.model.findOne(this.getQuery()).populate("MCQSet");
+    if (doc) {
+        await mongoose.model("Mcq").deleteMany({ _id: { $in: doc.MCQSet } });
+    }
+    next();
+});
+

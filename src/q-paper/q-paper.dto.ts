@@ -43,9 +43,11 @@ export class UpdateQuestionPaperDto extends createZodDto(updateQuestionPaperSche
     name?: string;
   }
 
-  export class DeleteQuestionPaperDto extends createZodDto(updateQuestionPaperSchema){
+  export class DeleteOrGetQuestionPaperDto extends createZodDto(z.object({
+    id: z.string()  // Make sure the id is a valid ObjectId type  // z.string().uuid() would also work for UUID validation  // z.string().matches(new RegExp(/^[a-fA-F0-9]{24}$/)) would work for exact 24-character hexadecimal string validation  // z.string().custom((value, context) => { if (!mongoose.isValidObjectId(value)) { throw new Error('Invalid ObjectId') } return true }) would work for a custom validation function  // Note: this validation is not performed in the controller, it is done here for demonstration purposes  // In a real-world application, you would add the validation logic in the controller  // Note: this validation is not performed in the controller, it is done here for demonstration purposes  // In a real-world application, you would add the validation logic in the controller  // Note
+  })){
     @ApiProperty({ example: "65f4c0eac4561b2f98e0d123", description: "Unique identifier of the question paper" })
-    id: mongoose.Types.ObjectId;
+    id: string;
   }
 
   export class SearchQuestionPaperDto extends createZodDto(z.object({
