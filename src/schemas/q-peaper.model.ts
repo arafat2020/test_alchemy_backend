@@ -27,3 +27,7 @@ export class QuestionPaper {
 
 export type QuestionPaperDocument = HydratedDocument<QuestionPaper>;
 export const QuestionPaperSchema = SchemaFactory.createForClass(QuestionPaper);
+QuestionPaperSchema.index({ 
+    name: "text",
+ });
+

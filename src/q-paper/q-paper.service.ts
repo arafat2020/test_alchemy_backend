@@ -19,7 +19,9 @@ export class QPaperService {
     }
 
     public async getAllQuestionPapers(): Promise<QuestionPaperDocument[]> {
-        return this.QuestionPaperModel.find().exec();
+        return this.QuestionPaperModel.find({
+            isDeleted: false
+        }).exec();
     }
 
     public async getQuestionPaperById({ id }: { id: string }): Promise<QuestionPaperDocument> {
@@ -47,19 +49,31 @@ export class QPaperService {
     public async deleteQuestionPaper({ id }: { id: string }): Promise<{
         msg: string
     }> {
-         await this.QuestionPaperModel.findOneAndUpdate({
+        await this.QuestionPaperModel.findOneAndUpdate({
             _id: id
-         },{
+        }, {
             isDeleted: true
-         },{
+        }, {
             new: true
-         }).exec();
+        }).exec();
 
-         return {
+        return {
             msg: 'Question Paper deleted successfully'
-         }
+        }
     }
 
+    public async searchQuestionPaper({
+        searchTerm
+    }: {
+        searchTerm: string
+    }): Promise<QuestionPaperDocument[]> {
+        await this.QuestionPaperModel.syncIndexes();
+        return this.QuestionPaperModel.find({
+            $text:{
+                $search: searchTerm
+            },
+            isDeleted: false
+        }).exec();
+    }
 
-    
 }

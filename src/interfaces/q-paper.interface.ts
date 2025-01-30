@@ -10,6 +10,15 @@ export const QuestionPaperSchema = z.object({
   isDeleted: z.boolean().default(false),
   name: z.string().min(1, "Name is required"),
 });
+export const updateQuestionPaperSchema = z.object({
+  id: z.instanceof(mongoose.Types.ObjectId),
+  duration: z.number().min(1).optional(),
+  totalMarks: z.number().optional(),
+  MCQSet: z.array(z.instanceof(mongoose.Types.ObjectId)).optional(),
+  examineeId: z.instanceof(mongoose.Types.ObjectId).optional(),
+  isDeleted: z.boolean().optional(),
+  name: z.string().min(1).optional(),
+});
 
 export const createQuestionPaperSchema = z.object({
     duration: z.number().min(1, "Duration must be at least 1 minute"),
