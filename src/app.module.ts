@@ -11,6 +11,7 @@ import { QPaperModule } from './q-paper/q-paper.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserSeeder } from './seed/user.seeder';
+import { ExamModule } from './exam/exam.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { UserSeeder } from './seed/user.seeder';
     ConfigModule.forRoot({
       isGlobal: true, 
     }),
+    ExamModule,
   ],
   controllers: [AppController],
   providers: [AppService],
