@@ -23,6 +23,9 @@ export class McqService {
         await this.QuestionModel.findByIdAndUpdate(qpId, {
             $push: {
                 MCQSet: createdMcq.id
+            },
+            $inc: {
+                totalMarks: +createdMcq.mark
             }
         }, {
             new: true
@@ -51,7 +54,7 @@ export class McqService {
 
     public async deleteMcq({
         id
-    }:{
+    }: {
         id: McqDeleteDto
     }): Promise<{
         msg: string

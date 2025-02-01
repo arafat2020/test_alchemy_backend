@@ -12,6 +12,9 @@ export class CreateQuestionPaperDto extends createZodDto(createQuestionPaperSche
 
     @ApiProperty({ example: "Final Exam 2025", description: "The name of the question paper" })
     name: string;
+
+    @ApiProperty({ example: 0, description: "Initial mark 0" })
+    totalMarks: number;
 }
 
 export class UpdateQuestionPaperDto extends createZodDto(updateQuestionPaperSchema) {

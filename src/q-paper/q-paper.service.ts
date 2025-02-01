@@ -22,7 +22,11 @@ export class QPaperService {
     public async getAllQuestionPapers(): Promise<QuestionPaperDocument[]> {
         return this.QuestionPaperModel.find({
             isDeleted: false
-        }).exec();
+        })
+        .sort({
+            _id: "asc"
+        })
+        .exec();
     }
 
     public async getQuestionPaperById({ id }: DeleteOrGetQuestionPaperDto): Promise<QuestionPaperDocument> {

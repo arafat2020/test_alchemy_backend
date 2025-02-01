@@ -24,7 +24,7 @@ export const createQuestionPaperSchema = z.object({
     duration: z.number().min(1, "Duration must be at least 1 minute"),
     name: z.string().min(1, "Name is required"),
     examineeId: z.instanceof(mongoose.Schema.Types.ObjectId),
-
+    totalMarks: z.number().optional()
 })
 
 // Type inference from schema

@@ -10,8 +10,11 @@ export class QuestionPaper {
     @Prop({ required: true })
     duration: number;
 
-    @Prop()
-    totalMarks?: number;
+    @Prop({
+        default:0,
+        required: true
+    })
+    totalMarks: number;
 
     @Prop({
         type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Mcq' }]
