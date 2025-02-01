@@ -16,6 +16,7 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, documentFactory);
   const seeder = app.get(UserSeeder);
   await seeder.seedAdmin();
+  await app.enableCors()
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
