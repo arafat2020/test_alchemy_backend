@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Schema, Types } from 'mongoose';
 import { Exam, ExamDocument } from 'src/schemas/exam.model';
 import { StartExamDto, EndExamDto } from './exam.dto';
 import { QuestionPaper, QuestionPaperDocument } from 'src/schemas/q-peaper.model';
@@ -47,32 +47,34 @@ export class ExamService {
 
         const { answerSheet } = exam;
         let acquiredMark = 0;
-        let reportSheet: { questionId: string; correctAnswer: number; studentAnswer: number | null }[] = [];
+        let reportSheet: { questionId: Types.ObjectId; correctAnswer: number; studentAnswer: number | null }[] = [];
 
         questionPaper.MCQSet.forEach((answer) => {
-            const mcq = answerSheet.find((e) => e.McqId.toString() === answer.mcqId.toString() && e.answer === answer.correctAns);
-            const wrongMcq = answerSheet.find((e) => e.mcqId.toString() === answer.mcqId.toString() && e.answer !== answer.correctAns);
+            console.log(answer);
             
-            if (mcq) {
-                acquiredMark += answer.mark;
-                reportSheet.push({
-                    questionId: answer.mcqId,
-                    correctAnswer: answer.correctAns,
-                    studentAnswer: mcq.answer,
-                });
-            } else if (wrongMcq) {
-                reportSheet.push({
-                    questionId: answer.mcqId,
-                    correctAnswer: answer.correctAns,
-                    studentAnswer: wrongMcq.answer,
-                });
-            } else {
-                reportSheet.push({
-                    questionId: answer.mcqId,
-                    correctAnswer: answer.correctAns,
-                    studentAnswer: null,
-                });
-            }
+            // const mcq = answerSheet.find((e) => e.McqId === answer._id && e.answer === answer.correctAns);
+            // const wrongMcq = answerSheet.find((e) => e.McqId === answer._id && e.answer !== answer.correctAns);
+            
+            // if (mcq) {
+            //     acquiredMark += answer.mark;
+            //     reportSheet.push({
+            //         questionId: answer._id,
+            //         correctAnswer: answer.correctAns,
+            //         studentAnswer: mcq.answer,
+            //     });
+            // } else if (wrongMcq) {
+            //     reportSheet.push({
+            //         questionId: answer._id,
+            //         correctAnswer: answer.correctAns,
+            //         studentAnswer: wrongMcq.answer,
+            //     });
+            // } else {
+            //     reportSheet.push({
+            //         questionId: answer._i,
+            //         correctAnswer: answer.correctAns,
+            //         studentAnswer: null,
+            //     });
+            // }
         });
 
         await this.ExamModel.updateOne({ _id: id }, { acquiredMark });

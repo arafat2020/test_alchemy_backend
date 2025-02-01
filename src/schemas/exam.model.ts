@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose, { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument, Types } from "mongoose";
 
 @Schema({ timestamps: true })
 export class Exam {
@@ -8,7 +8,7 @@ export class Exam {
 
     @Prop({ type: Array, required: true })
     answerSheet: {
-        McqId: mongoose.Schema.Types.ObjectId;
+        McqId: Types.ObjectId;
         answer: number
     }[];
 
