@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { UserLoginType, UserSignUpType } from 'src/interfaces/user.interface';
 import { LibService } from 'src/lib/lib.service';
 import { User, UserDocument, UserRole } from 'src/schemas/user.model';
+import { ExtendedHeaderDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -57,8 +58,12 @@ export class UserService {
         user: Partial<UserDocument>,
         token: string
     }> {
-        const isExisting = await this.UserModel.findOne({
+        const isExisting = await this.UserModel.findOneAndUpdate({
             email: credentials.email
+        },{
+            active: true
+        },{
+            new: true
         })
 
         if (!isExisting) throw new HttpException("User not found", HttpStatus.BAD_REQUEST)
@@ -77,12 +82,31 @@ export class UserService {
                 username: isExisting.username,
                 email: isExisting.email,
                 joiningDate: isExisting.joiningDate,
-                role: isExisting.role
+                role: isExisting.role,
+                active: isExisting.active
             },
             token: await this.jwt.signAsync({ id: isExisting._id, role: isExisting.role }, {
                 secret: this.config.get('JWT_SECRET'),
                 expiresIn: '24h'
             })
+        }
+    }
+
+    public async logout({
+        user
+    }:ExtendedHeaderDto): Promise<{
+        msg: string
+    }> {
+        const logoutUser = await this.UserModel.findByIdAndUpdate(user?.id,{
+            active: false
+        },{
+            new: true
+        }).exec()
+
+        if (!logoutUser) throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        if (logoutUser.active) throw new HttpException('Logout Failed', HttpStatus.NOT_FOUND)
+        return {
+            msg: 'User logged out successfully'
         }
     }
 }

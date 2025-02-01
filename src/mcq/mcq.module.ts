@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Mcq, McqSchema } from 'src/schemas/mcq.model';
 import { QuestionPaper, QuestionPaperSchema } from 'src/schemas/q-peaper.model';
 import { JwtService } from '@nestjs/jwt';
+import { User, UserSchema } from 'src/schemas/user.model';
 
 @Module({
   imports: [
@@ -15,6 +16,9 @@ import { JwtService } from '@nestjs/jwt';
       }, {
         name: QuestionPaper.name,
         schema: QuestionPaperSchema,
+      }, {
+        name: User.name,
+        schema: UserSchema,
       }
     ])
   ],

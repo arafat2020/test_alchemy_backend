@@ -8,11 +8,17 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { ConfigService } from "@nestjs/config/dist/config.service";
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserDocument } from 'src/schemas/user.model';
+import { Model } from 'mongoose';
 
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    @InjectModel(User.name) private readonly UserModel: Model<UserDocument>
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -27,8 +33,13 @@ export class AuthGuard implements CanActivate {
           secret: new ConfigService().get("JWT_SECRET")
         }
       );
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
+      const user = await this.UserModel.findById(payload.id)
+      if (!user) {
+        throw new HttpException("User Not Found",401);
+      }
+      if (!user.active) {
+        throw new HttpException("User is not Logged in",401);
+      }
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException();

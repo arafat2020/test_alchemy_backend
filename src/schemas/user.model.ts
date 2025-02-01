@@ -42,6 +42,11 @@ export class User {
         enum: UserRole,
     })
     role: UserRole;
+
+    @Prop({
+        default: true,
+    })
+    active: boolean;
 }
 
 export type UserDocument = HydratedDocument<User>;
