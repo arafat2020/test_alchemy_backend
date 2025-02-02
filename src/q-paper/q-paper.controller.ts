@@ -36,7 +36,7 @@ export class QPaperController {
         @Body() credentials: CreateQuestionPaperDto,
         @Req() req: ExtendedHeaderDto
     ) {
-        if (!req.user?.id) return UnauthorizedException
+        if (!req.user?.id) throw new UnauthorizedException()
         return await this.qPaperService.createQuestionPaper({
             credentials: {
                 examineeId: req.user?.id,
