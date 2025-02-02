@@ -6,17 +6,19 @@ export class Exam {
     @Prop({ required: true, default: false })
     isSubmitted: boolean;
 
-    @Prop({ type: Array, required: true })
+    @Prop({ type: Array, default: [] })
     answerSheet: {
-        McqId: Types.ObjectId;
+        McqId: string;
         answer: number
     }[];
 
-    @Prop()
-    startTime?: Date;
+    @Prop({
+        default: `${Date.now()}`,
+    })
+    startTime?: string;
 
     @Prop()
-    endTime?: Date;
+    endTime?: string;
 
     @Prop()
     totalMarks?: number;

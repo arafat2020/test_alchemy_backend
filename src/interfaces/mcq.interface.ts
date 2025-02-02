@@ -2,10 +2,11 @@ import { z } from "zod";
 
 // Zod schema for MCQ
 export const McqSchemaZod = z.object({
-    QPid: z.string().uuid(), // Assuming QPid is a UUID
+    QPid: z.string(),
+    McqId: z.optional(z.string().uuid()), // Assuming QPid is a UUID
     question: z.string().min(1, "Question is required"),
     options: z.array(z.string()).min(2, "There must be at least two options"), // Options must be an array of strings
-    correctAns: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)]), // Correct answer must be one of 0, 1, 2, or 3
+    correctAns: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]), // Correct answer must be one of 0, 1, 2, or 3
     mark: z.number().min(1, "Mark must be at least 1"), // Mark must be a positive number
 });
 

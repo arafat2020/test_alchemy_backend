@@ -4,8 +4,8 @@ import { createZodDto } from "nestjs-zod";
 import { EndExamSchema, ExamSchema } from "src/interfaces/exam.interface";
 
 export class StartExamDto extends createZodDto(ExamSchema) {
-    @ApiProperty({ example: "2025-01-01T00:00:00Z", description: "Start time of the exam" })
-    startTime: Date;
+    @ApiProperty({ example: "4646465416546541", description: "Start time of the exam" })
+    startTime: string;
   
     @ApiProperty({ example: "some-unique-id", description: "Question paper ID" })
     questionPaperId: string;
@@ -18,14 +18,14 @@ export class StartExamDto extends createZodDto(ExamSchema) {
     @ApiProperty({ example: "some-unique-id", description: "Exam ID" })
     id: string;
   
-    @ApiProperty({ example: "2025-01-01T12:00:00Z", description: "End time of the exam" })
+    @ApiProperty({ example: "53416546484164889684", description: "End time of the exam" })
     endTime: string;
   
     @ApiProperty({ example: true, description: "Submission status of the exam" })
     isSubmitted: boolean;
   
     @ApiProperty({ 
-      example: [{ mcqId: "mcq1", answer: 2 }],
+      example: [{ McqId: "mcq1", answer: 2 }],
       description: "Array of answered MCQs"
     })
     answerSheet: { mcqId: string; answer: number }[];

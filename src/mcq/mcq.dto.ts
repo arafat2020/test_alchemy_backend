@@ -15,8 +15,8 @@ export class McqDto extends createZodDto(McqSchemaZod) {
   @ApiProperty({ example: ['Paris', 'London', 'Berlin', 'Madrid'], description: 'The options for the MCQ' })
   options: string[];
 
-  @ApiProperty({ example: 0, description: 'The index of the correct answer in the options array (0-3)' })
-  correctAns: 0 | 1 | 2 | 3;
+  @ApiProperty({ example: 1, description: 'The index of the correct answer in the options array (1-4)' })
+  correctAns:  1 | 2 | 3 | 4;
 
   @ApiProperty({ example: 5, description: 'The mark awarded for this question' })
   mark: number;

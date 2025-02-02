@@ -4,6 +4,8 @@ import { Model } from 'mongoose';
 import { Mcq, McqDocument } from 'src/schemas/mcq.model';
 import { McqDeleteDto, McqDto, McqUpdateDto } from './mcq.dto';
 import { QuestionPaper, QuestionPaperDocument } from 'src/schemas/q-peaper.model';
+import { v4 as uuidv4 } from 'uuid';
+
 
 @Injectable()
 export class McqService {
@@ -19,10 +21,13 @@ export class McqService {
         qpId: string
         mcq: McqDto
     }): Promise<McqDocument> {
+        mcq.McqId = uuidv4()
         const createdMcq = await this.McqModel.create(mcq);
         await this.QuestionModel.findByIdAndUpdate(qpId, {
             $push: {
                 MCQSet: createdMcq.id
+            }, $inc: {
+                totalMarks: +createdMcq.mark
             }
         }, {
             new: true
@@ -51,7 +56,7 @@ export class McqService {
 
     public async deleteMcq({
         id
-    }:{
+    }: {
         id: McqDeleteDto
     }): Promise<{
         msg: string

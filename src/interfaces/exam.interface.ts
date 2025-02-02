@@ -14,8 +14,8 @@ export const ExamSchema = z.object({
       answer: z.number(),
     })
   ),
-  startTime: z.date().optional(),
-  endTime: z.date().optional(),
+  startTime: z.string().optional(),
+  endTime: z.string().optional(),
   totalMarks: z.number().optional(),
   isDeleted: z.boolean().default(false),
   questionPaperId: z.string().uuid(),
@@ -25,7 +25,7 @@ export const ExamSchema = z.object({
 
 export const EndExamSchema = z.object({
     id: z.string().min(1),
-    endTime: z.string().min(1),
+    endTime: z.string().optional(),
     isSubmitted: z.boolean(),
     answerSheet: z.array(
       z.object({
