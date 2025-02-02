@@ -1,10 +1,17 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
 
+
 @Schema()
 export class Mcq {
     @Prop({ required: true, ref: "QuestionPaper" })
     QPid: string;
+
+    @Prop({ 
+        required: true, 
+        unique:true,
+    })
+    McqId: string;
 
     @Prop({ required: true })
     question: string;
