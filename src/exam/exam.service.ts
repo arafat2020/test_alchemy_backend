@@ -16,8 +16,31 @@ export class ExamService {
         credential
     }: {
         credential: StartExamDto
-    }) {
-        return this.ExamModel.create(credential);
+    }):Promise<{
+        exam: ExamDocument;
+        questionPaper: {
+            McqId: string;
+            question: string;
+            options: string[];
+        }[]
+    }> {
+        const startExam = await this.ExamModel.create(credential);
+        const QuestionPaper = await this.QuestionPaperModel.findById(startExam.questionPaperId).populate("MCQSet")
+
+        if (!QuestionPaper) {
+            throw new HttpException("No QuestionPaper found", 404);
+        }
+
+        return {
+            exam: startExam,
+            questionPaper: QuestionPaper.MCQSet.map(e=> {
+                return {
+                    McqId: e.McqId,
+                    question: e.question,
+                    options: e.options,
+                }
+            })
+        };
     }
 
     public async endExam(id: string, payload: EndExamDto) {
@@ -47,34 +70,34 @@ export class ExamService {
 
         const { answerSheet } = exam;
         let acquiredMark = 0;
-        let reportSheet: { questionId: Types.ObjectId; correctAnswer: number; studentAnswer: number | null }[] = [];
+        let reportSheet: { questionId: string; correctAnswer: number; studentAnswer: number | null }[] = [];
 
         questionPaper.MCQSet.forEach((answer) => {
             console.log(answer);
             
-            // const mcq = answerSheet.find((e) => e.McqId === answer._id && e.answer === answer.correctAns);
-            // const wrongMcq = answerSheet.find((e) => e.McqId === answer._id && e.answer !== answer.correctAns);
+            const mcq = answerSheet.find((e) => e.McqId === answer.McqId && e.answer === answer.correctAns);
+            const wrongMcq = answerSheet.find((e) => e.McqId === answer.McqId && e.answer !== answer.correctAns);
             
-            // if (mcq) {
-            //     acquiredMark += answer.mark;
-            //     reportSheet.push({
-            //         questionId: answer._id,
-            //         correctAnswer: answer.correctAns,
-            //         studentAnswer: mcq.answer,
-            //     });
-            // } else if (wrongMcq) {
-            //     reportSheet.push({
-            //         questionId: answer._id,
-            //         correctAnswer: answer.correctAns,
-            //         studentAnswer: wrongMcq.answer,
-            //     });
-            // } else {
-            //     reportSheet.push({
-            //         questionId: answer._i,
-            //         correctAnswer: answer.correctAns,
-            //         studentAnswer: null,
-            //     });
-            // }
+            if (mcq) {
+                acquiredMark += answer.mark;
+                reportSheet.push({
+                    questionId: answer.McqId,
+                    correctAnswer: answer.correctAns,
+                    studentAnswer: mcq.answer,
+                });
+            } else if (wrongMcq) {
+                reportSheet.push({
+                    questionId: answer.McqId,
+                    correctAnswer: answer.correctAns,
+                    studentAnswer: wrongMcq.answer,
+                });
+            } else {
+                reportSheet.push({
+                    questionId: answer.McqId,
+                    correctAnswer: answer.correctAns,
+                    studentAnswer: null,
+                });
+            }
         });
 
         await this.ExamModel.updateOne({ _id: id }, { acquiredMark });
