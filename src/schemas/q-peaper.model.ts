@@ -4,7 +4,7 @@ import { Mcq } from "./mcq.model";
 
 @Schema({ timestamps: true })
 export class QuestionPaper {
-    @Prop({ required: true, unique: true })
+    @Prop({ required: true, })
     name: string;
 
     @Prop({ required: true })

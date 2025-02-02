@@ -1,22 +1,24 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose, { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument, Types } from "mongoose";
 
 @Schema({ timestamps: true })
 export class Exam {
     @Prop({ required: true, default: false })
     isSubmitted: boolean;
 
-    @Prop({ type: Array, required: true })
+    @Prop({ type: Array, default: [] })
     answerSheet: {
-        McqId: mongoose.Schema.Types.ObjectId;
+        McqId: string;
         answer: number
     }[];
 
-    @Prop()
-    startTime?: Date;
+    @Prop({
+        default: `${Date.now()}`,
+    })
+    startTime?: string;
 
     @Prop()
-    endTime?: Date;
+    endTime?: string;
 
     @Prop()
     totalMarks?: number;
