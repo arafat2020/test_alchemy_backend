@@ -21,6 +21,7 @@ import {
 import { ExamineeGuard } from 'src/user-role/examinee/examinee.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ExtendedHeaderDto } from 'src/user/user.dto';
+import { PaginationDto } from 'src/common/pagination.dto';
 
 @Controller('q-paper')
 @UseGuards(AuthGuard)
@@ -48,8 +49,8 @@ export class QPaperController {
 
     @Get("get-all")
     @ApiBearerAuth()
-    async getAllQuestionPapers() {
-        return await this.qPaperService.getAllQuestionPapers();
+    async getAllQuestionPapers(@Query() pagination: PaginationDto) {
+        return await this.qPaperService.getAllQuestionPapers(pagination);
     }
 
     @Get("get-by-id")

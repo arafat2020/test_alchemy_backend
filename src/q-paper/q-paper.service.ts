@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { createQuestionPaperType } from 'src/interfaces/q-paper.interface';
 import { QuestionPaper, QuestionPaperDocument } from 'src/schemas/q-peaper.model';
 import { DeleteOrGetQuestionPaperDto } from './q-paper.dto';
+import { PaginationDto } from 'src/common/pagination.dto';
 
 @Injectable()
 export class QPaperService {
@@ -19,15 +20,17 @@ export class QPaperService {
         return this.QuestionPaperModel.create(credentials);
     }
 
-    public async getAllQuestionPapers(): Promise<QuestionPaperDocument[]> {
+    public async getAllQuestionPapers(
+        { skip, take }: PaginationDto
+      ): Promise<QuestionPaperDocument[]> {
         return this.QuestionPaperModel.find({
-            isDeleted: false
+          isDeleted: false
         })
-        .sort({
-            _id: "asc"
-        })
-        .exec();
-    }
+          .sort({ _id: "asc" })
+          .skip(skip ?? 0)
+          .limit(take ?? 10)
+          .exec();
+      }
 
     public async getQuestionPaperById({ id }: DeleteOrGetQuestionPaperDto): Promise<QuestionPaperDocument> {
         const data = await this.QuestionPaperModel.findOne({
