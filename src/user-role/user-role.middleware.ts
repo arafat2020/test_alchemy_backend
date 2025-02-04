@@ -53,6 +53,6 @@ export class CandidateMiddleware extends BaseRoleMiddleware {
 @Injectable()
 export class ExamineeMiddleware extends BaseRoleMiddleware {
     constructor() {
-        super(UserRole.EXAMINEE);
+        super(UserRole.EXAMINER);
     }
 }

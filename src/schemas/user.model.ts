@@ -4,7 +4,7 @@ import { HydratedDocument } from "mongoose";
 export enum UserRole {
     ADMIN = "admin",
     CANDIDATE = "candidate",
-    EXAMINEE = "examinee"
+    EXAMINER = "examiner"
 }
 
 @Schema()
