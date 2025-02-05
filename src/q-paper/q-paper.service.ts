@@ -22,14 +22,17 @@ export class QPaperService {
 
     public async getAllQuestionPapers(
         { skip, take }: PaginationDto
-      ): Promise<QuestionPaperDocument[]> {
-        return this.QuestionPaperModel.find({
-          isDeleted: false
-        })
-          .sort({ _id: "asc" })
-          .skip(skip ?? 0)
-          .limit(take ?? 10)
-          .exec();
+      ): Promise<{ total: number; data: QuestionPaperDocument[] }> {
+        const [total, data] = await Promise.all([
+          this.QuestionPaperModel.countDocuments({ isDeleted: false }), // Total count
+          this.QuestionPaperModel.find({ isDeleted: false })            // Paginated data
+            .sort({ _id: "asc" })
+            .skip(skip ?? 0)
+            .limit(take ?? 10)
+            .exec(),
+        ]);
+      
+        return { total, data };
       }
 
     public async getQuestionPaperById({ id }: DeleteOrGetQuestionPaperDto): Promise<QuestionPaperDocument> {
