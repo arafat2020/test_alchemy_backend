@@ -24,6 +24,8 @@ export class ExamService {
             options: string[];
         }[]
     }> {
+        if (isNaN(Number(credential.startTime))) throw new BadRequestException("Invalid start time");
+
         const startExam = await this.ExamModel.create(credential);
         const QuestionPaper = await this.QuestionPaperModel.findById(startExam.questionPaperId).populate("MCQSet")
 
@@ -44,6 +46,8 @@ export class ExamService {
     }
 
     public async endExam(id: string, payload: EndExamDto) {
+        if (isNaN(Number(payload.endTime))) throw new BadRequestException("Invalid end time");
+        
         const exam = await this.ExamModel.findOneAndUpdate(
             { _id: id },
             payload,

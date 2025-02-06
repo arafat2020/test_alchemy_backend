@@ -13,6 +13,8 @@ export class ExamController {
     @Post('start')
     @ApiBearerAuth()
     async startExam(@Body() payload: StartExamDto) {
+        console.log(isNaN(Number(payload.startTime)));
+        
         return this.examService.startExam({
             credential: payload
         });

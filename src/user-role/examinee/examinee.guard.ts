@@ -9,9 +9,10 @@ export class ExamineeGuard implements CanActivate {
     canActivate(context: ExecutionContext): boolean {
         const request = context.switchToHttp().getRequest<customRequestType>();
         const user = request.user;
-
+        console.log(user);
+        
         if (!user || user.role !== UserRole.EXAMINER) {
-            throw new ForbiddenException('Access denied: Examinees only');
+            throw new ForbiddenException('Access denied: Examiner only');
         }
 
         return true;
