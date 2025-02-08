@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -60,9 +60,9 @@ export class UserService {
     }> {
         const isExisting = await this.UserModel.findOneAndUpdate({
             email: credentials.email
-        },{
+        }, {
             active: true
-        },{
+        }, {
             new: true
         })
 
@@ -94,12 +94,12 @@ export class UserService {
 
     public async logout({
         user
-    }:ExtendedHeaderDto): Promise<{
+    }: ExtendedHeaderDto): Promise<{
         msg: string
     }> {
-        const logoutUser = await this.UserModel.findByIdAndUpdate(user?.id,{
+        const logoutUser = await this.UserModel.findByIdAndUpdate(user?.id, {
             active: false
-        },{
+        }, {
             new: true
         }).exec()
 
@@ -110,7 +110,7 @@ export class UserService {
         }
     }
 
-    public async getAllUserByAdmin({ UserRole}:{UserRole: GetUserByAdminDto}){
+    public async getAllUserByAdmin({ UserRole }: { UserRole: GetUserByAdminDto }) {
         return this.UserModel.find({
             role: UserRole.userType
         })
@@ -120,5 +120,17 @@ export class UserService {
         return this.UserModel.find({
             role: UserRole.CANDIDATE
         }).exec()
+    }
+
+    public async verifyUser({
+        header
+    }: {
+        header: ExtendedHeaderDto
+    }) :Promise<UserDocument> {
+        const user = await this.UserModel.findById(header.user?.id)
+        if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        if (!user.active) throw new HttpException("User not active",HttpStatus.UNAUTHORIZED)
+
+        return user
     }
 }

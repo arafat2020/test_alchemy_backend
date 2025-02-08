@@ -37,10 +37,19 @@ export class UserController {
         return this.userService.getAllUserByAdmin({ UserRole });
     }
 
-    @Get('get-user-by-examiner')
+    @Get('get-user-by-admin')
     @ApiBearerAuth()
     @UseGuards(AuthGuard, ExamineeGuard)
     public async getAllUserByExaminer(): Promise<UserDocument[]> {
         return this.userService.getAllUserByExaminer()
+    }
+
+    @Post('verify')
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard)
+    public async verify(@Req() req: ExtendedHeaderDto){
+        return this.userService.verifyUser({
+            header: req
+        })
     }
 }
