@@ -7,6 +7,7 @@ import {
   UserSignUpSchema 
 } from "src/interfaces/user.interface";
 import { UserRole } from "src/schemas/user.model";
+import { z } from "zod";
 
 export class UserDto extends createZodDto(UserSignUpSchema) {
     @ApiProperty({ example: 'John Doe', description: 'The user\'s full name' })
@@ -40,6 +41,13 @@ export class UserSigninDto extends createZodDto(UserSigninSchema) {
 
     @ApiProperty({ example: 'password123', description: 'The user\'s password (min 8 characters)' })
     password: string;
+}
+
+export class GetUserByAdminDto extends createZodDto(z.object({
+  userType: z.nativeEnum(UserRole)
+})) {
+  @ApiProperty({ example: UserRole.CANDIDATE, enum: UserRole, description: 'Type of user to get' })
+  userType: UserRole;
 }
 
 export class BaseHeaderDto extends createZodDto(BaseHeaderSchema) { }

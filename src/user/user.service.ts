@@ -6,7 +6,7 @@ import { Model } from 'mongoose';
 import { UserLoginType, UserSignUpType } from 'src/interfaces/user.interface';
 import { LibService } from 'src/lib/lib.service';
 import { User, UserDocument, UserRole } from 'src/schemas/user.model';
-import { ExtendedHeaderDto } from './user.dto';
+import { ExtendedHeaderDto, GetUserByAdminDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -108,5 +108,17 @@ export class UserService {
         return {
             msg: 'User logged out successfully'
         }
+    }
+
+    public async getAllUserByAdmin({ UserRole}:{UserRole: GetUserByAdminDto}){
+        return this.UserModel.find({
+            role: UserRole.userType
+        })
+    }
+
+    public async getAllUserByExaminer() {
+        return this.UserModel.find({
+            role: UserRole.CANDIDATE
+        }).exec()
     }
 }
