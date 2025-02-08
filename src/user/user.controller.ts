@@ -44,7 +44,7 @@ export class UserController {
         return this.userService.getAllUserByExaminer()
     }
 
-    @Post('verify')
+    @Get('verify')
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
     public async verify(@Req() req: ExtendedHeaderDto){
