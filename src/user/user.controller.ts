@@ -37,7 +37,7 @@ export class UserController {
         return this.userService.getAllUserByAdmin({ UserRole });
     }
 
-    @Get()
+    @Get('get-user-by-examiner')
     @ApiBearerAuth()
     @UseGuards(AuthGuard, ExamineeGuard)
     public async getAllUserByExaminer(): Promise<UserDocument[]> {
