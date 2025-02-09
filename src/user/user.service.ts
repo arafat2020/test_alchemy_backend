@@ -9,6 +9,7 @@ import { User, UserDocument, UserRole } from 'src/schemas/user.model';
 import { ExtendedHeaderDto, GetUserByAdminDto, UpdateUserDto } from './user.dto';
 import { MongoId } from 'src/common/id.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
+import { GetUsersByAdminWithPaginationDto } from 'src/common/getUser.dto';
 
 @Injectable()
 export class UserService {
@@ -55,12 +56,12 @@ export class UserService {
     public updateUser({
         id,
         ...rest
-    }:UpdateUserDto){
+    }: UpdateUserDto) {
         return this.UserModel.findOneAndUpdate({
             _id: id
-        },{
+        }, {
             ...rest
-        },{
+        }, {
             new: true
         }).exec()
     }
@@ -125,45 +126,53 @@ export class UserService {
         }
     }
 
-    public async getAllUserByAdmin({ 
-        UserRole,
-        pagination
-     }: { 
-        UserRole: GetUserByAdminDto,
-        pagination: PaginationDto
-     }) {
-        return this.UserModel.find({
-            role: UserRole.userType
-        })
-        .skip(pagination.take ?? 0)
-        .limit(pagination.take ?? 10)
-        .exec()
+    public async getAllUserByAdmin(
+        { 
+            userType,
+            skip,
+            take
+         }: GetUsersByAdminWithPaginationDto
+    ): Promise<{ total: number; data: UserDocument[] }> {
+        const [total, data] = await Promise.all([
+            this.UserModel.countDocuments({ role: userType }), // Total count
+            this.UserModel.find({ role: userType })
+                .sort({ _id: "asc" })            // Paginated data
+                .skip(skip ?? 0)
+                .limit(take ?? 10)
+                .exec(),
+        ]);
+
+        return { total, data };
     }
 
-    public async getAllUserByExaminer({
-        pagination
-    }:{pagination: PaginationDto}) {
-        return this.UserModel.find({
-            role: UserRole.CANDIDATE
-        })
-        .skip(pagination.take ?? 0)
-        .limit(pagination.take ?? 10)
-        .exec()
+    public async getAllUserByExaminer(
+        { pagination }: { pagination: PaginationDto }
+    ): Promise<{ total: number; data: UserDocument[] }> {
+        const [total, data] = await Promise.all([
+            this.UserModel.countDocuments({ role: UserRole.CANDIDATE }), // Total count
+            this.UserModel.find({ role: UserRole.CANDIDATE })            // Paginated data
+                .skip(pagination.skip ?? 0)
+                .limit(pagination.take ?? 10)
+                .exec(),
+        ]);
+
+        return { total, data };
     }
+
 
     public async verifyUser({
         header
     }: {
         header: ExtendedHeaderDto
-    }) :Promise<UserDocument> {
+    }): Promise<UserDocument> {
         const user = await this.UserModel.findById(header.user?.id)
         if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        if (!user.active) throw new HttpException("User not active",HttpStatus.UNAUTHORIZED)
+        if (!user.active) throw new HttpException("User not active", HttpStatus.UNAUTHORIZED)
 
         return user
     }
 
-    public async delete({_id}:MongoId) {
+    public async delete({ _id }: MongoId) {
         return this.UserModel.findByIdAndDelete(_id).exec()
     }
 }

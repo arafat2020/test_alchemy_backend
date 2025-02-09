@@ -7,6 +7,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { AdminGuard } from 'src/user-role/admin/admin.guard';
 import { ExamineeGuard } from 'src/user-role/examinee/examinee.guard';
 import { PaginationDto } from 'src/common/pagination.dto';
+import { GetUsersByAdminWithPaginationDto } from 'src/common/getUser.dto';
 
 @Controller('user')
 export class UserController {
@@ -35,16 +36,15 @@ export class UserController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard, AdminGuard)
     public async getAllUserByAdmin(
-        @Query() UserRole: GetUserByAdminDto,
-        @Query() pagination: PaginationDto
-    ): Promise<UserDocument[]> {
-        return this.userService.getAllUserByAdmin({ UserRole, pagination });
+        @Query() getUserByAdmin: GetUsersByAdminWithPaginationDto,
+    ) {
+        return await this.userService.getAllUserByAdmin(getUserByAdmin);
     }
 
     @Get('get-user-by-examiner')
     @ApiBearerAuth()
     @UseGuards(AuthGuard, ExamineeGuard)
-    public async getAllUserByExaminer(@Query() pagination: PaginationDto): Promise<UserDocument[]> {
+    public async getAllUserByExaminer(@Query() pagination: PaginationDto) {
         return this.userService.getAllUserByExaminer({ pagination })
     }
 
