@@ -6,6 +6,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AdminGuard } from 'src/user-role/admin/admin.guard';
 import { ExamineeGuard } from 'src/user-role/examinee/examinee.guard';
+import { PaginationDto } from 'src/common/pagination.dto';
 
 @Controller('user')
 export class UserController {
@@ -33,21 +34,24 @@ export class UserController {
     @Get('get-user-by-admin')
     @ApiBearerAuth()
     @UseGuards(AuthGuard, AdminGuard)
-    public async getAllUserByAdmin(@Query() UserRole: GetUserByAdminDto): Promise<UserDocument[]> {
-        return this.userService.getAllUserByAdmin({ UserRole });
+    public async getAllUserByAdmin(
+        @Query() UserRole: GetUserByAdminDto,
+        @Query() pagination: PaginationDto
+    ): Promise<UserDocument[]> {
+        return this.userService.getAllUserByAdmin({ UserRole, pagination });
     }
 
     @Get('get-user-by-examiner')
     @ApiBearerAuth()
     @UseGuards(AuthGuard, ExamineeGuard)
-    public async getAllUserByExaminer(): Promise<UserDocument[]> {
-        return this.userService.getAllUserByExaminer()
+    public async getAllUserByExaminer(@Query() pagination: PaginationDto): Promise<UserDocument[]> {
+        return this.userService.getAllUserByExaminer({ pagination })
     }
 
     @Get('verify')
     @ApiBearerAuth()
     @UseGuards(AuthGuard)
-    public async verify(@Req() req: ExtendedHeaderDto){
+    public async verify(@Req() req: ExtendedHeaderDto) {
         return this.userService.verifyUser({
             header: req
         })

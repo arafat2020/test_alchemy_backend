@@ -8,6 +8,7 @@ import { LibService } from 'src/lib/lib.service';
 import { User, UserDocument, UserRole } from 'src/schemas/user.model';
 import { ExtendedHeaderDto, GetUserByAdminDto, UpdateUserDto } from './user.dto';
 import { MongoId } from 'src/common/id.dto';
+import { PaginationDto } from 'src/common/pagination.dto';
 
 @Injectable()
 export class UserService {
@@ -124,16 +125,30 @@ export class UserService {
         }
     }
 
-    public async getAllUserByAdmin({ UserRole }: { UserRole: GetUserByAdminDto }) {
+    public async getAllUserByAdmin({ 
+        UserRole,
+        pagination
+     }: { 
+        UserRole: GetUserByAdminDto,
+        pagination: PaginationDto
+     }) {
         return this.UserModel.find({
             role: UserRole.userType
         })
+        .skip(pagination.take ?? 0)
+        .limit(pagination.take ?? 10)
+        .exec()
     }
 
-    public async getAllUserByExaminer() {
+    public async getAllUserByExaminer({
+        pagination
+    }:{pagination: PaginationDto}) {
         return this.UserModel.find({
             role: UserRole.CANDIDATE
-        }).exec()
+        })
+        .skip(pagination.take ?? 0)
+        .limit(pagination.take ?? 10)
+        .exec()
     }
 
     public async verifyUser({
