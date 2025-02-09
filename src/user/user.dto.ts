@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
 import { createZodDto } from "nestjs-zod";
 import { 
   BaseHeaderSchema, 
@@ -33,6 +33,34 @@ export class UserDto extends createZodDto(UserSignUpSchema) {
 
     @ApiProperty({ example: UserRole.CANDIDATE, enum: UserRole, description: 'User role' })
     role: UserRole;
+}
+export class UpdateUserDto extends PartialType(UserDto) {
+  @ApiProperty({ example: 'userId123', description: 'The user\'s unique ID' })
+  id: string; // Required field
+
+  @ApiPropertyOptional({ example: 'John Doe', description: 'The user\'s full name' })
+  name?: string;
+
+  @ApiPropertyOptional({ example: 'john_doe', description: 'The user\'s username' })
+  username?: string;
+
+  @ApiPropertyOptional({ example: 'johndoe@example.com', description: 'The user\'s email address' })
+  email?: string;
+
+  @ApiPropertyOptional({ example: 'password123', description: 'The user\'s password (min 8 characters)' })
+  password?: string;
+
+  @ApiPropertyOptional({ example: 'https://example.com/user-pic.jpg', description: 'URL of the user\'s profile picture' })
+  pic?: string;
+
+  @ApiPropertyOptional({ example: '2025-01-01T00:00:00Z', description: 'The user\'s joining date' })
+  joiningDate?: Date;
+
+  @ApiPropertyOptional({ example: true, description: 'User account active status' })
+  active?: boolean;
+
+  @ApiPropertyOptional({ example: UserRole.CANDIDATE, enum: UserRole, description: 'User role' })
+  role?: UserRole;
 }
 
 export class UserSigninDto extends createZodDto(UserSigninSchema) {

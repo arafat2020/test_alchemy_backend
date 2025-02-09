@@ -6,7 +6,8 @@ import { Model } from 'mongoose';
 import { UserLoginType, UserSignUpType } from 'src/interfaces/user.interface';
 import { LibService } from 'src/lib/lib.service';
 import { User, UserDocument, UserRole } from 'src/schemas/user.model';
-import { ExtendedHeaderDto, GetUserByAdminDto } from './user.dto';
+import { ExtendedHeaderDto, GetUserByAdminDto, UpdateUserDto } from './user.dto';
+import { MongoId } from 'src/common/id.dto';
 
 @Injectable()
 export class UserService {
@@ -48,6 +49,19 @@ export class UserService {
             joiningDate: createdUser.joiningDate,
             role: createdUser.role
         }
+    }
+
+    public updateUser({
+        id,
+        ...rest
+    }:UpdateUserDto){
+        return this.UserModel.findOneAndUpdate({
+            _id: id
+        },{
+            ...rest
+        },{
+            new: true
+        }).exec()
     }
 
     public async login({
@@ -132,5 +146,9 @@ export class UserService {
         if (!user.active) throw new HttpException("User not active",HttpStatus.UNAUTHORIZED)
 
         return user
+    }
+
+    public async delete({_id}:MongoId) {
+        return this.UserModel.findByIdAndDelete(_id).exec()
     }
 }
