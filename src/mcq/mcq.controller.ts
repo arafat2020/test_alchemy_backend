@@ -1,4 +1,4 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Patch, Post, UseGuards } from '@nestjs/common';
 import { McqService } from './mcq.service';
 import { McqDeleteDto, McqDto, McqUpdateDto } from './mcq.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -30,7 +30,7 @@ export class McqController {
         });
     }
 
-    @Patch('delete')
+    @Delete('delete')
     @ApiBearerAuth()
     deleteMcq(@Body() mcqDeleteDto: McqDeleteDto) {
         return this.mcqService.deleteMcq({
