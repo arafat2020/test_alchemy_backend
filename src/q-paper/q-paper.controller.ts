@@ -49,8 +49,14 @@ export class QPaperController {
 
     @Get("get-all")
     @ApiBearerAuth()
-    async getAllQuestionPapers(@Query() pagination: PaginationDto) {
-        return await this.qPaperService.getAllQuestionPapers(pagination);
+    async getAllQuestionPapers(
+        @Query() pagination: PaginationDto,
+        @Req() req: ExtendedHeaderDto
+    ) {
+        return await this.qPaperService.getAllQuestionPapers({
+            page: pagination,
+            header: req
+        });
     }
 
     @Get("get-by-id")

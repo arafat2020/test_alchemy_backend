@@ -5,6 +5,7 @@ import { createQuestionPaperType } from 'src/interfaces/q-paper.interface';
 import { QuestionPaper, QuestionPaperDocument } from 'src/schemas/q-peaper.model';
 import { DeleteOrGetQuestionPaperDto } from './q-paper.dto';
 import { PaginationDto } from 'src/common/pagination.dto';
+import { ExtendedHeaderDto } from 'src/user/user.dto';
 
 @Injectable()
 export class QPaperService {
@@ -21,14 +22,26 @@ export class QPaperService {
     }
 
     public async getAllQuestionPapers(
-        { skip, take }: PaginationDto
+        { 
+            page,
+            header
+        }: {
+            page: PaginationDto,
+            header: ExtendedHeaderDto
+        }
       ): Promise<{ total: number; data: QuestionPaperDocument[] }> {
         const [total, data] = await Promise.all([
-          this.QuestionPaperModel.countDocuments({ isDeleted: false }), // Total count
-          this.QuestionPaperModel.find({ isDeleted: false })            // Paginated data
+          this.QuestionPaperModel.countDocuments({ 
+            isDeleted: false,
+            examineeId: header.user?.id
+         }), // Total count
+          this.QuestionPaperModel.find({ 
+            isDeleted: false,
+            examineeId: header.user?.id
+         })            // Paginated data
             .sort({ _id: "asc" })
-            .skip(skip ?? 0)
-            .limit(take ?? 10)
+            .skip(page.skip ?? 0)
+            .limit(page.take ?? 10)
             .exec(),
         ]);
       

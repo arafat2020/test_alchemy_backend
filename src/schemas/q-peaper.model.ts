@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument } from "mongoose";
 import { Mcq } from "./mcq.model";
+import { User } from "./user.model";
 
 @Schema({ timestamps: true })
 export class QuestionPaper {
@@ -21,8 +22,8 @@ export class QuestionPaper {
     })
     MCQSet: Mcq[];
 
-    @Prop({ required: true })
-    examineeId: string;
+    @Prop({  type: mongoose.Schema.Types.ObjectId, ref: 'User'  })
+    examineeId: User;
 
     @Prop({ required: true, default: false })
     isDeleted: boolean;
