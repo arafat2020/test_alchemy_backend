@@ -23,8 +23,8 @@ export class McqDto extends createZodDto(McqSchemaZod) {
 }
 
 export class McqUpdateDto extends createZodDto(McqUpdateSchema) {
-    @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'The UUID of the question paper' })
-    QPid?: string; // Make it optional for updates
+    @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'The id of the MCQ' })
+    id: string; // Make it optional for updates
   
     @ApiProperty({ example: 'What is the capital of France?', description: 'The question text', required: false })
     question?: string; // Make it optional for updates
