@@ -33,11 +33,9 @@ export class QPaperService {
         const [total, data] = await Promise.all([
           this.QuestionPaperModel.countDocuments({ 
             isDeleted: false,
-            examineeId: header.user?.id
          }), // Total count
           this.QuestionPaperModel.find({ 
             isDeleted: false,
-            examineeId: header.user?.id
          })            // Paginated data
             .sort({ _id: "asc" })
             .skip(page.skip ?? 0)
