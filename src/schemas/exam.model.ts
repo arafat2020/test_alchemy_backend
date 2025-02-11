@@ -26,8 +26,8 @@ export class Exam {
     @Prop({ required: true, default: false })
     isDeleted: boolean;
 
-    @Prop({ required: true, unique: true })
-    questionPaperId: string;
+    @Prop({ required: true })
+    questionPaperId: mongoose.Schema.Types.ObjectId;
 
     @Prop({ required: true })
     candidId: mongoose.Schema.Types.ObjectId;
