@@ -16,7 +16,7 @@ export class StartExamDto extends createZodDto(ExamSchema) {
 
   export class EndExamDto extends createZodDto(EndExamSchema) {
     @ApiProperty({ example: "some-unique-id", description: "Exam ID" })
-    id: string;
+    Exam_id: Types.ObjectId;
   
     @ApiProperty({ example: "53416546484164889684", description: "End time of the exam" })
     endTime: string;

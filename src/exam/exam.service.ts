@@ -45,11 +45,12 @@ export class ExamService {
         };
     }
 
-    public async endExam(id: string, payload: EndExamDto) {
+    public async endExam(id: Types.ObjectId, payload: EndExamDto) {
         if (isNaN(Number(payload.endTime))) throw new BadRequestException("Invalid end time");
+        console.log(id);
         
-        const exam = await this.ExamModel.findOneAndUpdate(
-            { _id: id },
+        const exam = await this.ExamModel.findByIdAndUpdate(
+            id,
             payload,
             { new: true }
         );
@@ -114,8 +115,12 @@ export class ExamService {
     }
 
     private isExamWithinDuration(startTime: string, endTime: string, duration: number): boolean {
-        const start = new Date(startTime).getTime();
-        const end = new Date(endTime).getTime();
+        console.log(startTime, endTime);
+        
+        const start = new Date(parseInt(startTime)).getTime();
+        const end = new Date(parseInt(endTime)).getTime();
+        console.log(start, end, duration);
+        
         return end - start <= duration * 60000; // Convert minutes to milliseconds
     }
 }

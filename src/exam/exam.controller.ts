@@ -23,7 +23,7 @@ export class ExamController {
     @Post('end')
     @ApiBearerAuth()
     async endExam(@Body() payload: EndExamDto) {
-        const { id } = payload;
-        await this.examService.endExam(id, payload);
+        const { Exam_id } = payload;
+        return await this.examService.endExam(Exam_id, payload);
     }
 }
