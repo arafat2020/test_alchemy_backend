@@ -12,6 +12,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserSeeder } from './seed/user.seeder';
 import { ExamModule } from './exam/exam.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -33,6 +35,9 @@ import { ExamModule } from './exam/exam.module';
       isGlobal: true, 
     }),
     ExamModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'), // Serving files from public/
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
